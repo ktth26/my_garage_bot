@@ -37,3 +37,42 @@
 ```bash
 git clone https://github.com/ваш-логин/my_garage_bot.git
 cd my_garage_bot
+
+### 2. Создать виртуальное окружение
+
+```bash
+python3 -m venv venv
+source venv/bin/activate   # для macOS / Linux
+# venv\Scripts\activate    # для Windows
+```
+
+### 3. Установить зависимости
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Получить токен бота
+
+- Откройте Telegram → `@BotFather` → `/newbot`.
+- Следуйте инструкциям, скопируйте токен.
+
+### 5. Создать `.env`
+
+```bash
+cp .env.example .env
+```
+
+Откройте `.env` и вставьте свой токен:
+
+```
+BOT_TOKEN=7123456789:AAH_ваш_токен_здесь
+```
+
+### 6. Запустить
+
+```bash
+python bot.py
+```
+
+В терминале появится `Бот запущен. Планировщик активен.` — откройте бота в Telegram и нажмите `/start`.
