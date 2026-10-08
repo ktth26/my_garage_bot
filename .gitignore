@@ -1,0 +1,26 @@
+# Виртуальное окружение
+venv/
+env/
+.venv/
+
+# Секреты
+.env
+
+# База данных
+garage.db
+*.db
+*.sqlite3
+
+# Python кэш
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Логи
+*.log

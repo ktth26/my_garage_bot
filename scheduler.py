@@ -194,7 +194,6 @@ async def daily_check(bot: Bot):
 
 
 def start_scheduler(bot: Bot):
-    """Запускаем ежедневную проверку в 10:00 по Москве."""
     scheduler.add_job(
         daily_check,
         trigger="cron",

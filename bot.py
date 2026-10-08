@@ -8,6 +8,13 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, BufferedInputFile
 
+from keyboards import (
+    main_menu, skip_or_enter, vehicles_inline, vehicle_actions,
+    maintenance_types_inline, intervals_inline, back_only,
+    reminder_actions_inline, mileage_reminder_inline,
+    repair_added_inline, categories_inline,
+)
+
 from config import (
     BOT_TOKEN,
     DEFAULT_OIL_INTERVAL_KM, DEFAULT_OIL_INTERVAL_MONTHS,
@@ -968,18 +975,15 @@ async def addrepair_notes(message: Message, state: FSMContext):
         cost_parts=data["cost_parts"], cost_work=data["cost_work"], notes=notes,
     )
 
-    # Обновляем пробег машины, если записанный больше текущего
     v = db.get_vehicle_dict(data["vehicle_id"])
     if v and data["mileage"] > v["current_mileage"]:
         db.update_mileage(data["vehicle_id"], data["mileage"])
 
-    # Получаем запись, чтобы узнать присвоенную категорию
     rec = db.get_record(record_id)
     cat_key = rec.get("category") if rec else None
     cat_label = REPAIR_CATEGORIES.get(cat_key, "—")
 
-    await state.update_data(record_id=record_id)
-    await state.set_state(AddRepair.confirm)
+    await state.clear()
 
     await message.answer(
         f"✅ <b>Работа добавлена</b>\n\n"
@@ -991,6 +995,7 @@ async def addrepair_notes(message: Message, state: FSMContext):
         reply_markup=repair_added_inline(record_id),
         parse_mode="HTML",
     )
+    await message.answer("Что дальше?", reply_markup=main_menu())
 
 
 # ============================================================
@@ -1106,7 +1111,22 @@ async def delete_vehicle(call: CallbackQuery):
     await call.message.edit_text("🗑 Машина удалена.")
     await call.answer()
 
+# ============================================================
+# FALLBACK: обработка «Пропустить» вне анкеты
+# ============================================================
 
+@dp.message(F.text == "Пропустить")
+async def fallback_skip(message: Message, state: FSMContext):
+    """Если пользователь нажал «Пропустить», но мы не в анкете —
+    просто возвращаем главное меню."""
+    current_state = await state.get_state()
+    # Если мы в состоянии анкеты — не мешаем, обычные обработчики справятся
+    # Но если состояние пустое — значит, пользователь застрял
+    if current_state is None:
+        await message.answer(
+            "Главное меню:",
+            reply_markup=main_menu(),
+        )
 # ============================================================
 # ЗАПУСК
 # ============================================================
