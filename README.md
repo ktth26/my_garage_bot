@@ -35,8 +35,9 @@
 ### 1. Клонировать репозиторий
 
 ```bash
-git clone https://github.com/ваш-логин/my_garage_bot.git
+git clone https://github.com/ktth26/my_garage_bot.git
 cd my_garage_bot
+```
 
 ### 2. Создать виртуальное окружение
 
